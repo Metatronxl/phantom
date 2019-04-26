@@ -5,6 +5,7 @@
     <modules>
         <module>proxy-kidd</module>
         <module>phantom-backend</module>
+        <module>proxy-grab</module>
   </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -32,6 +33,11 @@
             <dependency>
                 <groupId>com.noisy</groupId>
                 <artifactId>phantom-backend</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.noisy</groupId>
+                <artifactId>proxy-grab</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
