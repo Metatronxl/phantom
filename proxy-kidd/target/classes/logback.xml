@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
     <!-- 保存路径-->
-    <property name="logDir" value="/services/logs"/>
+    <property name="logDir" value="./services/logs"/>
     <!-- 保存日志天数-->
     <property name="maxHistory" value="3"/>
 
@@ -11,7 +11,7 @@
     <property name="projectName" value="proxy-scanner"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/${logDir}/${projectName}/${projectName}.log</file>
+        <file>${logDir}/${projectName}/${projectName}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${logDir}/${projectName}/${projectName}-%d{yyyy-MM-dd}.zip</fileNamePattern>
             <maxHistory>${maxHistory}</maxHistory>
