@@ -31,4 +31,4 @@ HELP.md
 ### Others ###
 commandIgnore.md
 /services
-*/target/*
+proxy-kidd/target/*
