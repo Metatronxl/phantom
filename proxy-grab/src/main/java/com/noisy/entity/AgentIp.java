@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author liuzhaoce
- * @since 2019-04-29
+ * @since 2019-05-05
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -31,9 +31,7 @@ public class AgentIp implements Serializable {
 
     private String type;
 
-    private String country;
-
-    private String city;
+    private String location;
 
     private String operator;
 

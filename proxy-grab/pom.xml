@@ -23,11 +23,6 @@
       <artifactId>dungproxy-client</artifactId>
       <version>0.0.8</version>
     </dependency>
-    <!--implementation 'org.springframework.boot:spring-boot-starter-web:2.0.0.RELEASE' -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -11,6 +11,12 @@ import java.util.List;
  */
 public class IPutils {
 
+
+    /**
+     * @Description: 拆分List<String>
+     * @param size 拆分成的每个List的大小
+     * @param target 待拆分List
+     */
     public static List<List<String>> createList(List<String> target, int size) {
 
         List<List<String>> listArr = Lists.newArrayList();

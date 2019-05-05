@@ -1,7 +1,7 @@
 package com.noisy;
 
 
-import com.noisy.crawlers.GrabData5u;
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,12 +17,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 @MapperScan("com.noisy")
+@Slf4j
 public class GrabCenter extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
 
         ConfigurableApplicationContext context = SpringApplication.run(GrabCenter.class, args);
-        GrabData5u.grab(context);
     }
 
     @Override

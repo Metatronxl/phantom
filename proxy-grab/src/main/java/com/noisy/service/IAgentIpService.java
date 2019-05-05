@@ -1,7 +1,7 @@
 package com.noisy.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.noisy.entity.AgentIp;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -9,9 +9,8 @@ import com.noisy.entity.AgentIp;
  * </p>
  *
  * @author liuzhaoce
- * @since 2019-04-29
+ * @since 2019-05-05
  */
 public interface IAgentIpService extends IService<AgentIp> {
-
 
 }

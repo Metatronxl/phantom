@@ -24,6 +24,7 @@ HELP.md
 /nbdist/
 /.nb-gradle/
 /build/
+/proxy-grab/src/main/resources/application.yml
 
 ### VS Code ###
 .vscode/

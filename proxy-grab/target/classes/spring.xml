@@ -23,6 +23,7 @@
             <bean class="com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor"></bean>
         </array>
     </property>
+    <property name="mapperLocations" value="classpath*:mapper/AgentIpMapper.xml"/>
 </bean>
 
 <bean id="globalConfig" class="com.baomidou.mybatisplus.core.config.GlobalConfig">
@@ -41,5 +42,4 @@
 </bean>
 
 <bean id="SpringContextUtil" class="com.noisy.utils.SpringContextUtil" scope="singleton"></bean>
-    <bean id="AgentIpServiceImpl" class="com.noisy.service.impl.AgentIpServiceImpl"></bean>
 </beans>
