@@ -18,14 +18,14 @@ import java.util.List;
 
 /**
  * @Auther: liuzhaoce
- * @Date: 2019-04-30 20:42
+ * @Date: 2019-05-05 15:38
  * @Description:
  */
 
 @Component
 @Configuration
 @EnableScheduling
-public class Upload5UTask {
+public class UploadXiciTask {
 
     @Resource
     AgentIpServiceImpl agentIpService;
@@ -34,26 +34,35 @@ public class Upload5UTask {
     private void configureTasks() {
 
         try {
-            String s = HttpInvoker.get("http://www.data5u.com/free/index.html");
-            System.out.println(s);
-            List<String> msg = XpathParser.compile("//css('.wlist')::ul[position() > 1]/span/li/text()").evaluateToString(Jsoup.parse(s));
-            List<AgentIp> agentIPs = msgToIP(msg);
+            String s = HttpInvoker.get("https://www.xicidaili.com/nn/1");
+            List<String> msg = XpathParser.compile("//css('#ip_list')::tbody/tr[position() > 1]/td/text()").evaluateToString(Jsoup.parse(s));
+            List<String> location = XpathParser.compile("//css('#ip_list')::tbody/tr[position() > 1]/td/a/text()").evaluateToString(Jsoup.parse(s));
+            System.out.println(msg);
+            System.out.println(location);
+            List<AgentIp> agentIPs = msgToIP(msg, location);
             System.out.println(agentIPs);
+//            System.out.println(agentIPs);
             agentIpService.upload(agentIPs);
-            System.err.println("爬取无忧代理 定时任务时间: " + LocalDateTime.now());
+            System.err.println("爬取西刺代理 定时任务时间: " + LocalDateTime.now());
         } catch (XpathSyntaxErrorException e) {
             e.printStackTrace();
         }
 
     }
 
-    private static List<AgentIp> msgToIP(List<String> msg) {
+    private static List<AgentIp> msgToIP(List<String> msg, List<String> location) {
 
-        List<List<String>> listArr = IPutils.createList(msg, 9);
+        List<List<String>> listArr = IPutils.createList(msg, 10);
         List<AgentIp> agentIPList = Lists.newArrayList();
+        int i = 0;
         for (List<String> item : listArr) {
-            AgentIp agentIp = new AgentIp(item.get(0), item.get(1), item.get(2), item.get(3), item.get(4) + " " + item.get(5), item.get(6));
+            String loc = "";
+            if (location.size() > i){
+                loc = location.get(i);
+            }
+            AgentIp agentIp = new AgentIp(item.get(1), item.get(2), item.get(4), item.get(5), loc, "");
             agentIPList.add(agentIp);
+            i++;
         }
         return agentIPList;
     }

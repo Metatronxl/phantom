@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -34,11 +35,12 @@ public class UploadKuaidailiTask {
 
         try {
             String s = HttpInvoker.get("https://www.kuaidaili.com/free/");
+            System.out.println(s);
             List<String> msg = XpathParser.compile("//css('.con-body')::div/div/table/tbody/tr/td/text()").evaluateToString(Jsoup.parse(s));
             List<AgentIp> agentIps = msgToIP(msg, 7);
             System.out.println(agentIps);
             agentIpService.upload(agentIps);
-
+            System.err.println("爬取快代理 定时任务时间: " + LocalDateTime.now());
         } catch (XpathSyntaxErrorException e) {
             e.printStackTrace();
         }
