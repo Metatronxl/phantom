@@ -1,7 +1,8 @@
-package com.noisy.proxy.detector;
+package com.noisy.proxy.entity;
 
 /**
- * Created by kevin on 5/24/16.
+ * @author lei.X
+ * @date 2019/4/29
  */
 public enum ProxyType {
     TRANSPARENT(0),
@@ -19,3 +20,4 @@ public enum ProxyType {
         return type;
     }
 }
+

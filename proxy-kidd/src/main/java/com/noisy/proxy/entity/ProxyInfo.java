@@ -1,4 +1,4 @@
-package com.noisy.proxy.detector;
+package com.noisy.proxy.entity;
 
 /**
  * Created by kevin on 5/24/16.

@@ -11,7 +11,7 @@ import us.monoid.web.Resty;
 public class IPLocationUtils {
     private final static Logger log = LoggerFactory.getLogger(IPLocationUtils.class);
     private final static Resty restClient = new Resty();
-    private final static String geoURL = ConfigUtils.getConfig().getString("geo.service.url");
+    private final static String geoURL ="http://maxcd03-dev05/geoip/ip2coor/";
 
     public static String getLocation(final String ip) {
         String location = null;

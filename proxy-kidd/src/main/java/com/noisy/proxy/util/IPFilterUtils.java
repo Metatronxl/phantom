@@ -1,21 +1,12 @@
 package com.noisy.proxy.util;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
- * Created by kevin on 6/1/16.
+ * Created by Lei.x on 5/6/19.
  */
 public class IPFilterUtils {
-    private final static Configuration config = ConfigUtils.getConfig();
-    private final static Set<String> _FilterIPList = new HashSet<>();
     private final static long longMulticastIP = IPSegment.ipToLong("224.0.0.0");
     private final static long classAPrivateIPStart = IPSegment.ipToLong("10.0.0.0");
     private final static long classAPrivateIPEnd = IPSegment.ipToLong("10.255.255.255");
@@ -26,34 +17,22 @@ public class IPFilterUtils {
 
     private final static IPFilterUtils _Instance = new IPFilterUtils();
 
-    private IPFilterUtils() {
-        String filterIPListFilePath = config.getString("filter.ip.list.file");
-        if (StringUtils.isEmpty(filterIPListFilePath)) {
-            throw new IllegalArgumentException("The filter IP list file hasn't been configured.");
-        }
-        File filterIPListFile = FileUtils.getFile(filterIPListFilePath);
-        if (filterIPListFile == null) {
-            throw new IllegalArgumentException("Cannot load the filter IP list from file: " + filterIPListFilePath);
-        }
+    private Set<String> _FilterIPList = new HashSet<String>(){
+        {
+            add("139.219.135.92");
+            add("185.12.64.0");
+            add("185.12.64.1");
+            add("185.12.64.2");
+            add("185.12.64.3");
+            add("104.20.65.24");
 
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(filterIPListFile), "utf-8"));
-            List<String> filterIPList = IOUtils.readLines(br);
-            if (filterIPList != null && !filterIPList.isEmpty()) {
-                for (String filterIP : filterIPList) {
-                    _FilterIPList.add(filterIP.trim());
-                }
-                br.close();
-            } else {
-                br.close();
-                throw new IllegalArgumentException(
-                        "The filter IP list file is empty, file path: " + filterIPListFilePath);
-            }
-        } catch (IOException e) {
-            throw new IllegalArgumentException(
-                    "An exception occurred when loading filter IP list from file: " + filterIPListFilePath);
         }
+    };
+
+
+
+    private IPFilterUtils() {
+
     }
 
     public static IPFilterUtils getInstance() {

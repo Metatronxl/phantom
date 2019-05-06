@@ -1,10 +1,12 @@
 package com.noisy.proxy.detector;
 
+import com.noisy.proxy.EmailReporter;
+import com.noisy.proxy.TaskScheduler;
 import com.noisy.proxy.dao.ProxyInfoDao;
 import com.noisy.proxy.dao.ProxyInfoDaoFilempl;
-import com.noisy.proxy.task.TaskScheduler;
-import com.noisy.proxy.util.ConfigUtils;
-import com.noisy.proxy.report.EmailReporter;
+import com.noisy.proxy.entity.ProtocolType;
+import com.noisy.proxy.entity.ProxyInfo;
+import com.noisy.proxy.entity.ProxyType;
 import com.noisy.proxy.util.IPLocationUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -35,7 +37,9 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class HTTPProxyDetector extends AbstractProxyDetector {
     private static final Logger log = LoggerFactory.getLogger(HTTPProxyDetector.class);
-    private final static int nThreads = ConfigUtils.getConfig().getInt("thread.pool.size.cores.multiple")
+//    线程池核心数 Config the thread pool size by the multiple of the CPU cores, must small than 20
+    private final static int THREAD_POOL_SIZE_CORES_MULTIPLE = 2;
+    private final static int nThreads = THREAD_POOL_SIZE_CORES_MULTIPLE
             * Runtime.getRuntime().availableProcessors();
 
     private final ProxyInfoDao proxyInfoDao = new ProxyInfoDaoFilempl();
@@ -44,15 +48,14 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     private final AtomicLong taskCounter = new AtomicLong(0);
     private final AtomicLong totalTasks = new AtomicLong(0);
     private final AtomicLong proxyIPNum = new AtomicLong(0);
-    private final int tcpConnLimits = ConfigUtils.getConfig().getInt("tcp.connection.limits");
+    // The TCP connection limits of the system, must small than 500000
+    private final int tcpConnLimits = 2000;
     private final Semaphore semaphore = new Semaphore(tcpConnLimits);
     private final Semaphore canStartNextSchSem = new Semaphore(1);
     private Bootstrap bootstrap;
     private String outputTmpFilePath;
     private File outputTmpFile;
     private TaskScheduler scheduler;
-
-    private static final String tag = "HTTPProxyDetectorResult";
 
     public HTTPProxyDetector(TaskScheduler scheduler) {
         this.scheduler = scheduler;
@@ -209,7 +212,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                     Integer port = (Integer) ctx.channel().attr(AttributeKey.valueOf("port")).get();
                     proxyInfo = new ProxyInfo(proxyIP,
                             ProtocolType.HTTP.getType(), port, proxyType.getType(), System.currentTimeMillis());
-                    log.info(tag,proxyInfo.toString());
+                    log.info(proxyInfo.toString());
                     proxyIPNum.incrementAndGet();
                     proxyInfo.setLocation(IPLocationUtils.getLocation(proxyInfo.getIp()));
                     proxyInfoDao.append(proxyInfo, outputTmpFile);

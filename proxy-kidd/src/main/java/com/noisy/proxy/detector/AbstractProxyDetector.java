@@ -1,11 +1,12 @@
 package com.noisy.proxy.detector;
 
-import com.noisy.proxy.util.ConfigUtils;
+import com.noisy.proxy.entity.ProxyType;
 import com.noisy.proxy.util.IPPoolUtils;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -16,17 +17,22 @@ import java.util.Set;
 /**
  * Created by kevin on 5/24/16.
  */
-public abstract class AbstractProxyDetector implements ProxyDetector {
-    private static final Logger log = LoggerFactory.getLogger(AbstractProxyDetector.class);
-    private static final Configuration config = ConfigUtils.getConfig();
 
-    private final String proxyCheckerURL = config.getString("proxy.checker.url");
-    private final String proxyCheckerHost = config.getString("proxy.checker.host");
-    private final int proxyCheckerPort = config.getInt("proxy.checker.port");
-    private final String proxyCheckerPath = config.getString("proxy.checker.path");
-    private final int timeout = ConfigUtils.getConfig().getInt("timeout");
-    private String localIP = ConfigUtils.getConfig().getString("localhost.ip");
-    private final String outputDir = config.getString("output.dir");
+public abstract class AbstractProxyDetector implements ProxyDetector {
+
+
+    private static final Logger log = LoggerFactory.getLogger(AbstractProxyDetector.class);
+    //TODO update
+    private String proxyCheckerURL = "http://www.scumall.com:20000/test/parse";
+    private String proxyCheckerHost = "www.scumall.com";
+    private int proxyCheckerPort = 20000;
+    private String proxyCheckerPath ="/test/parse";
+    private final int timeout = 10000;
+    // TODO 改为自动获取
+    private String localIP="115.28.58.82";
+    private String outputDir="output/";
+
+
 
     public String getProxyCheckerURL() {
         return proxyCheckerURL;
