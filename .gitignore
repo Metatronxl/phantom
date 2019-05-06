@@ -24,7 +24,7 @@ HELP.md
 /nbdist/
 /.nb-gradle/
 /build/
-/proxy-grab/src/main/resources/application.yml
+
 
 ### VS Code ###
 .vscode/
@@ -33,3 +33,8 @@ HELP.md
 commandIgnore.md
 /services
 proxy-kidd/target/*
+proxy-grab/target/*
+phantom-backend/target/classes/
+phantom-backend/target/generated-sources/
+phantom-backend/target/generated-test-sources/
+proxy-grab/src/main/resources/application.yml

@@ -35,7 +35,6 @@ public class UploadKuaidailiTask {
 
         try {
             String s = HttpInvoker.get("https://www.kuaidaili.com/free/");
-            System.out.println(s);
             List<String> msg = XpathParser.compile("//css('.con-body')::div/div/table/tbody/tr/td/text()").evaluateToString(Jsoup.parse(s));
             List<AgentIp> agentIps = msgToIP(msg, 7);
             System.out.println(agentIps);

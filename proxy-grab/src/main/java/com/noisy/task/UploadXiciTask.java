@@ -41,7 +41,6 @@ public class UploadXiciTask {
             System.out.println(location);
             List<AgentIp> agentIPs = msgToIP(msg, location);
             System.out.println(agentIPs);
-//            System.out.println(agentIPs);
             agentIpService.upload(agentIPs);
             System.err.println("爬取西刺代理 定时任务时间: " + LocalDateTime.now());
         } catch (XpathSyntaxErrorException e) {

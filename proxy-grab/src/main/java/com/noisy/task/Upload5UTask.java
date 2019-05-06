@@ -10,7 +10,6 @@ import com.virjar.sipsoup.parse.XpathParser;
 import org.jsoup.Jsoup;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -31,12 +30,11 @@ public class Upload5UTask {
     @Resource
     AgentIpServiceImpl agentIpService;
 
-    @Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 5000)
     private void configureTasks() {
 
         try {
             String s = HttpInvoker.get("http://www.data5u.com/free/index.html");
-            System.out.println(s);
             List<String> msg = XpathParser.compile("//css('.wlist')::ul[position() > 1]/span/li/text()").evaluateToString(Jsoup.parse(s));
             List<AgentIp> agentIPs = msgToIP(msg);
             System.out.println(agentIPs);
