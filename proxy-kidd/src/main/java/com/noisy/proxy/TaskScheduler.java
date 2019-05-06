@@ -4,7 +4,6 @@ import com.noisy.proxy.detector.ProxyDetector;
 import com.noisy.proxy.detector.ProxyDetectorFactory;
 import com.noisy.proxy.entity.InputType;
 import com.noisy.proxy.entity.ProtocolType;
-import com.noisy.proxy.util.DetectPorts;
 import com.noisy.proxy.util.IPFilterUtils;
 import com.noisy.proxy.util.IPPoolUtils;
 import com.noisy.proxy.util.IPSegment;
@@ -20,10 +19,13 @@ import java.util.Set;
 /**
  * Created by kevin on 5/25/16.
  */
-public class TaskScheduler implements Runnable {
-    private final static Logger log = LoggerFactory.getLogger(TaskScheduler.class);
-    private final static Set<Integer> ports = DetectPorts.getInstance().getPorts();
 
+public class TaskScheduler implements Runnable {
+
+
+    private final static Logger log = LoggerFactory.getLogger(TaskScheduler.class);
+
+    private  Set<Integer> ports;
     private String name;
     private String scanTarget;
     private Map<Integer, String> ipSegments;
@@ -33,7 +35,7 @@ public class TaskScheduler implements Runnable {
     private long totalTasks;
     private String inputType;
 
-    public TaskScheduler(String name, String scanTarget, ProtocolType protocolType, Map<Integer, String> ipSegments) {
+    public TaskScheduler(String name, String scanTarget, ProtocolType protocolType, Map<Integer, String> ipSegments,Set<Integer> ports) {
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(scanTarget)
                 || protocolType == null || ipSegments == null) {
             throw new IllegalArgumentException(
@@ -44,13 +46,14 @@ public class TaskScheduler implements Runnable {
         this.scanTarget = scanTarget;
         this.protocolType = protocolType;
         this.ipSegments = ipSegments;
+        this.ports = ports;
 
         proxyDetector = ProxyDetectorFactory.createProxyDetector(protocolType, this);
         totalTasks = 0;
         inputType = InputType.IP_SEGMENTS.getType();
     }
 
-    public TaskScheduler(String name, String scanTarget, ProtocolType protocolType, Set<String> ipList) {
+    public TaskScheduler(String name, String scanTarget, ProtocolType protocolType, Set<String> ipList,Set<Integer> ports) {
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(scanTarget)
                 || protocolType == null || ipList == null) {
             throw new IllegalArgumentException(
@@ -61,6 +64,7 @@ public class TaskScheduler implements Runnable {
         this.scanTarget = scanTarget;
         this.protocolType = protocolType;
         this.ipList = ipList;
+        this.ports = ports;
 
         proxyDetector = ProxyDetectorFactory.createProxyDetector(protocolType, this);
         totalTasks = 0;
@@ -117,6 +121,7 @@ public class TaskScheduler implements Runnable {
             for (String proxyIP : ipList) {
 
                 proxyDetector.detect(proxyIP, port);
+                log.info("proxy detect start...proxyIP:{} ### port:{}",proxyIP,port);
             }
         }
 

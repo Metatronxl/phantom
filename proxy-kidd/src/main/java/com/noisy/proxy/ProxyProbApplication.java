@@ -3,6 +3,7 @@ package com.noisy.proxy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @author lei.X
@@ -12,6 +13,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 public class ProxyProbApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProxyProbApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(ProxyProbApplication.class, args);
+        ProxyScanner bean = context.getBean(ProxyScanner.class);
+        bean.start();
+
     }
 }
