@@ -79,6 +79,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
         bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator());
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout());
 
+        //linux系统可以使用Epoll
         if (Epoll.isAvailable()) {
             bootstrap.handler(new ChannelInitializer<EpollSocketChannel>() {
                 @Override
@@ -91,7 +92,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                     ch.pipeline().addLast(new WriteTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
                     // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
                     ch.pipeline().addLast(new HttpRequestEncoder());
-
+                    // 收到响应的处理
                     ch.pipeline().addLast(new HTTPProxyRespHandler());
                 }
             });
