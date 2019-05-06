@@ -2,15 +2,11 @@ package com.noisy.task;
 
 import com.noisy.service.impl.AgentIpServiceImpl;
 import com.virjar.dungproxy.client.httpclient.HttpInvoker;
-import com.virjar.sipsoup.exception.XpathSyntaxErrorException;
-import com.virjar.sipsoup.parse.XpathParser;
-import org.jsoup.Jsoup;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @Auther: liuzhaoce
@@ -29,17 +25,9 @@ public class UploadGoubanjiaTask {
 //    @Scheduled(fixedRate = 5000)
     private void configureTasks() {
 
-        try {
-            String s = HttpInvoker.get("http://www.goubanjia.com/");
-            System.out.println(s);
-            List<String> msg = XpathParser.compile("//css('.wlist')::ul[position() > 1]/span/li/text()").evaluateToString(Jsoup.parse(s));
-//            List<AgentIp> agentIPs = msgToIP(msg);
-//            System.out.println(agentIPs);
-//            agentIpService.upload(agentIPs);
-//            System.err.println("爬取无忧代理 定时任务时间: " + LocalDateTime.now());
-        } catch (XpathSyntaxErrorException e) {
-            e.printStackTrace();
-        }
+        String s = HttpInvoker.get("http://www.goubanjia.com/");
+
+        // TODO : 爬取goubanjia的代理ip，页面分析较为繁琐，每个数字放在不同的标签里
 
     }
 

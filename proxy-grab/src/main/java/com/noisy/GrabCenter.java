@@ -22,6 +22,7 @@ public class GrabCenter extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
 
+        //未使用，留下自建类使用Spring模块的方式
         ConfigurableApplicationContext context = SpringApplication.run(GrabCenter.class, args);
     }
 

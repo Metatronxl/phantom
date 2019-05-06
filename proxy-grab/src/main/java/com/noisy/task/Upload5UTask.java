@@ -10,6 +10,7 @@ import com.virjar.sipsoup.parse.XpathParser;
 import org.jsoup.Jsoup;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -30,7 +31,7 @@ public class Upload5UTask {
     @Resource
     AgentIpServiceImpl agentIpService;
 
-//    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 5000)
     private void configureTasks() {
 
         try {
