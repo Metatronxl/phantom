@@ -1,6 +1,6 @@
 package com.noisy.proxy.dao;
 
-import com.noisy.proxy.detector.ProxyInfo;
+import com.noisy.proxy.entity.ProxyInfo;
 
 import java.io.File;
 
