@@ -1,7 +1,5 @@
 package com.noisy.proxy;
 
-import com.noisy.proxy.util.ConfigUtils;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
@@ -18,7 +16,15 @@ import java.util.Date;
  */
 public class EmailReporter {
     private final static Logger log = LoggerFactory.getLogger(EmailReporter.class);
-    private final static Configuration config = ConfigUtils.getConfig();
+
+    //TODO 转移到application.properties
+    // email 配置
+    private String emailHostName = "smtp.office365.com";
+    private int emailSmtpPort = 587;
+    private String emailAuthUsername = "kaiping.he@maxent-inc.com";
+    private String emailAuthPassword = "Maxent-khe";
+    private String emailtoList = "381827702@qq.com";
+
 
     private final static EmailReporter _instance = new EmailReporter();
     private final static long dayMilliseconds = 24 * 60 * 60 * 1000;
@@ -40,13 +46,13 @@ public class EmailReporter {
     }
 
     private void init() throws EmailException {
-        email.setHostName(config.getString("email.server.hostname"));
-        email.setSmtpPort(config.getInt("email.server.port"));
+        email.setHostName(emailHostName);
+        email.setSmtpPort(emailSmtpPort);
         email.setAuthenticator(new DefaultAuthenticator(
-                config.getString("email.auth.username"), config.getString("email.auth.password")));
+                emailAuthUsername, emailAuthPassword));
         email.setStartTLSEnabled(true);
-        email.setFrom(config.getString("email.auth.username"));
-        String[] toList = config.getString("email.to.list").split("\\|");
+        email.setFrom(emailAuthUsername);
+        String[] toList = emailtoList.split("\\|");
         for (String to : toList) {
             email.addTo(to);
         }
