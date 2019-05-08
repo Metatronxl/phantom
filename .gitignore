@@ -24,6 +24,7 @@ HELP.md
 /nbdist/
 /.nb-gradle/
 /build/
+/proxy-grab/target
 /proxy-grab/src/main/resources/application.yml
 
 ### VS Code ###
@@ -31,3 +32,20 @@ HELP.md
 
 ### Others ###
 commandIgnore.md
+output/
+phantom-backend/target/classes/
+phantom-backend/target/generated-sources/
+phantom-backend/target/generated-test-sources/
+proxy-grab/target/classes/agent_ip.sql
+proxy-grab/target/classes/com/noisy/phantom/
+proxy-grab/target/generated-sources/
+proxy-grab/target/generated-test-sources/
+proxy-grab/target/maven-archiver/
+proxy-grab/target/maven-status/
+proxy-grab/target/surefire-reports/
+proxy-kidd/target/classes/com/
+proxy-kidd/target/generated-sources/
+proxy-kidd/target/generated-test-sources/
+proxy-kidd/target/test-classes/META-INF/
+proxy-kidd/target/test-classes/com/noisy/
+services/
