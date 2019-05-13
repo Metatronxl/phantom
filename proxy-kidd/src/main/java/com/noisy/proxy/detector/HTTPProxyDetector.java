@@ -179,9 +179,9 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
             canStartNextSchSem.release();
 
             long consumedTime = System.currentTimeMillis() - startTime.getTimeInMillis();
-            EmailReporter.getInstance().report(scheduler.getScanTarget(),
-                    startTime.getTime(), totalTasks.get() / scheduler.getScanPortNum(),
-                    scheduler.getScanPortNum(), proxyIPNum.get(), consumedTime);
+//            EmailReporter.getInstance().report(scheduler.getScanTarget(),
+//                    startTime.getTime(), totalTasks.get() / scheduler.getScanPortNum(),
+//                    scheduler.getScanPortNum(), proxyIPNum.get(), consumedTime);
             String distFilePath = retrieveOutputFilePath(outputTmpFilePath);
             try {
                 if (outputTmpFile.exists())
@@ -190,8 +190,8 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                 log.error("Failed to move the temporary file {} to the dist file {}. Exception: {}",
                         outputTmpFile.getPath(), distFilePath, e);
             }
-            log.info("Finished one scanning schedule, total tasks: {}, consumed time: {}",
-                    totalTasks, consumedTime);
+            log.info("Finished one scanning schedule, total tasks: {}, consumed time: {},file address:{}",
+                    totalTasks, consumedTime,outputTmpFile.getPath());
         }
     }
 
@@ -213,7 +213,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                     Integer port = (Integer) ctx.channel().attr(AttributeKey.valueOf("port")).get();
                     proxyInfo = new ProxyInfo(proxyIP,
                             ProtocolType.HTTP.getType(), port, proxyType.getType(), System.currentTimeMillis());
-                    log.info(proxyInfo.toString());
+                    log.info("FIND PROXY:"+proxyInfo.toString());
                     proxyIPNum.incrementAndGet();
                     proxyInfo.setLocation(IPLocationUtils.getLocation(proxyInfo.getIp()));
                     proxyInfoDao.append(proxyInfo, outputTmpFile);
