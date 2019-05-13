@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
     <!-- 保存路径-->
-    <property name="logDir" value="./services/logs"/>
+    <property name="logDir" value="root/proxyScanner/log"/>
     <!-- 保存日志天数-->
     <property name="maxHistory" value="3"/>
 
