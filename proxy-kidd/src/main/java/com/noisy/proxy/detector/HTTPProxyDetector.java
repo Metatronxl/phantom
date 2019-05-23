@@ -166,6 +166,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     }
 
     private synchronized void finish(ChannelHandlerContext ctx) {
+        // 避免重复调用
         if (ctx.channel().hasAttr(AttributeKey.valueOf("finished"))) {
             return;
         }
