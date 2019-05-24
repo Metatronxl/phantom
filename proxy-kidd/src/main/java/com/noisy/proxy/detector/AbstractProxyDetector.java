@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -24,44 +25,27 @@ public abstract class AbstractProxyDetector implements ProxyDetector {
     private static final Logger log = LoggerFactory.getLogger(AbstractProxyDetector.class);
     //TODO update
     private String proxyCheckerURL = "http://www.scumall.com:20000/test/parse";
-    private String proxyCheckerHost = "www.scumall.com";
-    private int proxyCheckerPort = 20000;
-    private String proxyCheckerPath ="/test/parse";
     private final int timeout = 10000;
-    // TODO 改为自动获取
-    private String localIP="115.28.58.82";
     private String outputDir="output/";
-
 
 
     public String getProxyCheckerURL() {
         return proxyCheckerURL;
     }
 
-    public String getProxyCheckerHost() {
-        return proxyCheckerHost;
-    }
-
-    public int getProxyCheckerPort() {
-        return proxyCheckerPort;
-    }
-
-    public String getProxyCheckerPath() {
-        return proxyCheckerPath;
-    }
-
     public int getTimeout() {
         return timeout;
     }
 
-    public String getLocalIP() {
-        if (StringUtils.isEmpty(localIP)) {
-            try {
-                localIP = InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-                localIP = null;
-                log.warn("An exception occurred when retrieving the local IP, exception: {}", e);
-            }
+    public String getLocalIP() throws UnknownHostException {
+
+        String localIP = null;
+        try {
+            localIP = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            localIP = null;
+            log.error("An exception occurred when retrieving the local IP, exception: {}", e);
+            throw new UnknownHostException("can't get local IP");
         }
 
         return localIP;
@@ -89,10 +73,7 @@ public abstract class AbstractProxyDetector implements ProxyDetector {
         return IPPoolUtils.validateIP(ip);
     }
 
-    public ProxyType checkProxyType(String proxyIp, String response) {
-        if (response == null || !response.contains("proxy-checker")) {
-            return null;
-        }
+    public ProxyType checkProxyType(String proxyIp, String response) throws UnknownHostException {
 
         String currentLocalIP = getLocalIP();
         Set<String> responseIPs = IPPoolUtils.retrieveIPFromText(response);

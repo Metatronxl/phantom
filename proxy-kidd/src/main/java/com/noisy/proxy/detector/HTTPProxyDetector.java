@@ -1,6 +1,5 @@
 package com.noisy.proxy.detector;
 
-import com.noisy.proxy.EmailReporter;
 import com.noisy.proxy.TaskScheduler;
 import com.noisy.proxy.dao.ProxyInfoDao;
 import com.noisy.proxy.dao.ProxyInfoDaoFilempl;
@@ -21,6 +20,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.AttributeKey;
 import org.apache.commons.io.FileUtils;
+import org.apache.tools.ant.taskdefs.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class HTTPProxyDetector extends AbstractProxyDetector {
     private static final Logger log = LoggerFactory.getLogger(HTTPProxyDetector.class);
-//    线程池核心数 Config the thread pool size by the multiple of the CPU cores, must small than 20
+    //    线程池核心数 Config the thread pool size by the multiple of the CPU cores, must small than 20
     private final static int THREAD_POOL_SIZE_CORES_MULTIPLE = 2;
     private final static int nThreads = THREAD_POOL_SIZE_CORES_MULTIPLE
             * Runtime.getRuntime().availableProcessors();
@@ -59,11 +59,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
 
     public HTTPProxyDetector(TaskScheduler scheduler) {
         this.scheduler = scheduler;
-        if (Epoll.isAvailable()) {
-            workerGroup = new EpollEventLoopGroup(nThreads);
-        } else {
-            workerGroup = new NioEventLoopGroup(nThreads);
-        }
+        workerGroup = new NioEventLoopGroup(nThreads);
 
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
@@ -82,40 +78,22 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
         bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new AdaptiveRecvByteBufAllocator());
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, getTimeout());
 
-        //linux系统可以使用Epoll
-        if (Epoll.isAvailable()) {
-            bootstrap.handler(new ChannelInitializer<EpollSocketChannel>() {
-                @Override
-                public void initChannel(EpollSocketChannel ch) throws Exception {
-                    // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
-                    ch.pipeline().addLast(new HttpResponseDecoder());
-                    ch.pipeline().addLast(new ReadTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
 
-                    ch.pipeline().addLast(new HttpClientOutboundHandler());
-                    ch.pipeline().addLast(new WriteTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
-                    // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
-                    ch.pipeline().addLast(new HttpRequestEncoder());
-                    // 收到响应的处理
-                    ch.pipeline().addLast(new HTTPProxyRespHandler());
-                }
-            });
-        } else {
-            bootstrap.handler(new ChannelInitializer<NioSocketChannel>() {
-                @Override
-                public void initChannel(NioSocketChannel ch) throws Exception {
-                    // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
-                    ch.pipeline().addLast(new HttpResponseDecoder());
-                    ch.pipeline().addLast(new ReadTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
+        bootstrap.handler(new ChannelInitializer<NioSocketChannel>() {
+            @Override
+            public void initChannel(NioSocketChannel ch) throws Exception {
+                // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
+                ch.pipeline().addLast(new HttpClientCodec());
+                ch.pipeline().addLast(new ReadTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
 
-                    ch.pipeline().addLast(new HttpClientOutboundHandler());
-                    ch.pipeline().addLast(new WriteTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
-                    // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
-                    ch.pipeline().addLast(new HttpRequestEncoder());
+                ch.pipeline().addLast(new HttpClientOutboundHandler());
+                ch.pipeline().addLast(new WriteTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
+                // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
+//                ch.pipeline().addLast(new HttpRequestEncoder());
 
-                    ch.pipeline().addLast(new HTTPProxyRespHandler());
-                }
-            });
-        }
+                ch.pipeline().addLast(new HTTPProxyRespHandler());
+            }
+        });
 
         outputTmpFilePath = getOutputTmpFilePath(scheduler.getName());
         outputTmpFile = new File(outputTmpFilePath);
@@ -165,7 +143,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
         }
     }
 
-    private synchronized void finish(ChannelHandlerContext ctx) {
+    private synchronized void finish(ChannelHandlerContext ctx) throws InterruptedException {
         // 避免重复调用
         if (ctx.channel().hasAttr(AttributeKey.valueOf("finished"))) {
             return;
@@ -183,16 +161,9 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
 //            EmailReporter.getInstance().report(scheduler.getScanTarget(),
 //                    startTime.getTime(), totalTasks.get() / scheduler.getScanPortNum(),
 //                    scheduler.getScanPortNum(), proxyIPNum.get(), consumedTime);
-            String distFilePath = retrieveOutputFilePath(outputTmpFilePath);
-            try {
-                if (outputTmpFile.exists())
-                    FileUtils.moveFile(outputTmpFile, new File(distFilePath));
-            } catch (IOException e) {
-                log.error("Failed to move the temporary file {} to the dist file {}. Exception: {}",
-                        outputTmpFile.getPath(), distFilePath, e);
-            }
+
             log.info("Finished one scanning schedule, total tasks: {}, consumed time: {},file address:{}",
-                    totalTasks, consumedTime,outputTmpFile.getPath());
+                    totalTasks, consumedTime, outputTmpFile.getPath());
         }
     }
 
@@ -208,15 +179,17 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                 buf.release();
 
                 String proxyIP = (String) ctx.channel().attr(AttributeKey.valueOf("ip")).get();
+                System.out.println(responseText.trim());
                 ProxyType proxyType = checkProxyType(proxyIP, responseText.trim());
                 if (proxyType != null) {
                     ProxyInfo proxyInfo;
                     Integer port = (Integer) ctx.channel().attr(AttributeKey.valueOf("port")).get();
                     proxyInfo = new ProxyInfo(proxyIP,
                             ProtocolType.HTTP.getType(), port, proxyType.getType(), System.currentTimeMillis());
-                    log.info("FIND PROXY:"+proxyInfo.toString());
+                    log.info("FIND PROXY:" + proxyInfo.toString());
                     proxyIPNum.incrementAndGet();
-                    proxyInfo.setLocation(IPLocationUtils.getLocation(proxyInfo.getIp()));
+                    //TODO 添加GEO数据库
+//                    proxyInfo.setLocation(IPLocationUtils.getLocation(proxyInfo.getIp()));
                     proxyInfoDao.append(proxyInfo, outputTmpFile);
                 }
             }
@@ -229,8 +202,16 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             // Send HTTP request
             URI uri = new URI(getProxyCheckerURL());
-            DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_0, HttpMethod.GET,
-                    uri.toASCIIString());
+            int port = uri.getPort();
+            String host = uri.getHost() +":"+String.valueOf(port);
+
+            HttpRequest request = new DefaultHttpRequest(
+                    HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
+            request.headers().set(HttpHeaderNames.HOST, host);
+            request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+            request.headers().set(HttpHeaderNames.PROXY_CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+
+
             ctx.channel().writeAndFlush(request);
         }
 
