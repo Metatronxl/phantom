@@ -32,6 +32,7 @@ HELP.md
 ### Others ###
 commandIgnore.md
 /services
+/output
 proxy-kidd/target/*
 proxy-grab/target/*
 phantom-backend/target/classes/
