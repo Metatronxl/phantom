@@ -1,16 +1,16 @@
 package com.noisy.proxy;
 
-import com.noisy.proxy.util.SpringContextUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * @author lei.X
  * @date 2019/4/29
  */
 @SpringBootApplication
+@EnableJpaAuditing
 public class ProxyProbApplication {
 
     public static void main(String[] args) {
