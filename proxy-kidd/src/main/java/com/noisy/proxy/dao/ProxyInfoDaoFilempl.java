@@ -1,9 +1,11 @@
 package com.noisy.proxy.dao;
 
 import com.noisy.proxy.entity.ProxyInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +13,10 @@ import java.io.IOException;
 /**
  * Created by kevin on 5/31/16.
  */
+
+@Component
+@Slf4j
 public class ProxyInfoDaoFilempl extends AbstractProxyInfoDaoImpl {
-    private static final Logger log = LoggerFactory.getLogger(ProxyInfoDaoFilempl.class);
 
     @Override
     public void append(ProxyInfo proxyInfo, File distFile) {

@@ -24,6 +24,7 @@ import org.apache.tools.ant.taskdefs.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -42,7 +43,8 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     private final static int nThreads = THREAD_POOL_SIZE_CORES_MULTIPLE
             * Runtime.getRuntime().availableProcessors();
 
-    private final ProxyInfoDao proxyInfoDao = new ProxyInfoDaoFilempl();
+    private final ProxyInfoDao proxyInfoDao =  new ProxyInfoDaoFilempl();
+
     private EventLoopGroup workerGroup;
     private Calendar startTime = Calendar.getInstance();
     private final AtomicLong taskCounter = new AtomicLong(0);
