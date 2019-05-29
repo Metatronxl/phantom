@@ -1,39 +1,39 @@
 # mysql database
 server:
-port: 5597
+  port: 5597
 
 spring:
-datasource:
-type: com.alibaba.druid.pool.DruidDataSource
-driver-class-name: com.mysql.jdbc.Driver
-url: jdbc:mysql://115.28.58.82:3306/phantom?characterEncoding=utf-8&autoReconnect=true&useSSL=false
-username: root
-password: phantom
-filters: stat
-maxActive: 20
-initialSize: 1
-maxWait: 60000
-minIdle: 1
-timeBetweenEvictionRunsMillis: 60000
-minEvictableIdleTimeMillis: 300000
-validationQuery: select 1 FROM DUAL
-testWhileIdle: true
-testOnBorrow: false
-testOnReturn: false
-poolPreparedStatements: true
-maxOpenPreparedStatements: 20
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://115.28.58.82:3306/phantom?characterEncoding=utf-8&autoReconnect=true&useSSL=false
+    username: root
+    password: phantom
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
 
-jpa:
-hibernate:
-ddl-auto: update
-database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-show-sql: true
-servlet:
-multipart:
-max-request-size: 300MB
-max-file-size: 1000MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+  servlet:
+    multipart:
+      max-request-size: 300MB
+      max-file-size: 1000MB
 
-#\u8BBE\u5B9A\u521D\u59CB\u7C7B\u578B(\u9009\u62E9IP_LIST \u8FD8\u662F IP_SEGMENT)
+#ip_segments  ip_list
 input_type: ip_list
 
 # Ports need to detect
