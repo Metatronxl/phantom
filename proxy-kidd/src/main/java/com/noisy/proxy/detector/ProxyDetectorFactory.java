@@ -18,10 +18,10 @@ public class ProxyDetectorFactory {
         switch (protocolType) {
             case HTTP:
                 return new HTTPProxyDetector(scheduler);
-//            case SOCKS_V4:
-//                return new Socks4ProxyDetector(scheduler);
-//            case SOCKS_V5:
-//                return new Socks5ProxyDetector(scheduler);
+            case SOCKS_V4:
+                return new Socks4ProxyDetector(scheduler);
+            case SOCKS_V5:
+                return new Socks5ProxyDetector(scheduler);
         }
 
         return new HTTPProxyDetector(scheduler);

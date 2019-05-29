@@ -49,8 +49,8 @@ public class ProxyScanner {
 
 
         String ipListFilePath = dataAddress + "IpList.txt";
-        String inlandFilePath = dataAddress + "TestInlandIPSegments.txt";
-        String abroadIpFilePath = dataAddress + "TestAbroadIPSegments.txt";
+        String inlandFilePath = dataAddress + "InlandIPSegments.txt";
+        String abroadIpFilePath = dataAddress + "AbroadIPSegments.txt";
         String portFilePath = env.getProperty("detection.ports.file");
 
 
@@ -81,24 +81,24 @@ public class ProxyScanner {
         }
 
         if (inlandSocks4Interval >= 0) {
-//            scheduleInlandSocks4Task(executor);
+            scheduleInlandSocks4Task(executor,inlandSocks4Interval);
         }
 
         if (inlandSocks5Interval >= 0) {
-//            scheduleInlandSocks5Task(executor);
+            scheduleInlandSocks5Task(executor,inlandSocks5Interval);
         }
 
         if (InputType.IP_SEGMENTS.isThisType(inputType)) {
             if (abroadHTTPInterval >= 0) {
-//                scheduleAbroadHTTPTask(executor);
+                scheduleAbroadHTTPTask(executor,abroadHTTPInterval);
             }
 
             if (abroadSocks4Interval >= 0) {
-//                scheduleAbroadSocks4Task(executor);
+                scheduleAbroadSocks4Task(executor,abroadSocks4Interval);
             }
 
             if (abroadSocks5Interval >= 0) {
-//                scheduleAbroadSocks5Task(executor);
+                scheduleAbroadSocks5Task(executor,abroadSocks5Interval);
             }
         }
 
@@ -120,6 +120,56 @@ public class ProxyScanner {
         executor.scheduleAtFixedRate(scheduler, getInitDelay(inlandHTTPInterval,
                 Integer.valueOf(env.getProperty("inland.http.scanner.start"))), inlandHTTPInterval, TimeUnit.MILLISECONDS);
     }
+
+
+    private void scheduleInlandSocks4Task(ScheduledExecutorService executor,long inlandSocks4Interval){
+        TaskScheduler scheduler = null;
+        if (InputType.IP_LIST.isThisType(inputType)) {
+            scheduler = new TaskScheduler("InlandSocks4Proxy", "国内Socks4代理",
+                    ProtocolType.SOCKS_V4, ipList,ports);
+        } else {
+            scheduler = new TaskScheduler("InlandSocks4Proxy", "国内Socks4代理",
+                    ProtocolType.SOCKS_V4, inlandIPSegments,ports);
+        }
+        executor.scheduleAtFixedRate(scheduler, getInitDelay(inlandSocks4Interval,
+                Integer.valueOf(env.getProperty("inland.socks4.scanner.start"))), inlandSocks4Interval, TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleInlandSocks5Task(ScheduledExecutorService executor,long inlandSocks5Interval){
+        TaskScheduler scheduler = null;
+        if (InputType.IP_LIST.isThisType(inputType)) {
+            scheduler = new TaskScheduler("InlandSocks5Proxy", "国内Socks5代理",
+                    ProtocolType.SOCKS_V5, ipList,ports);
+        } else {
+            scheduler = new TaskScheduler("InlandSocks5Proxy", "国内Socks5代理",
+                    ProtocolType.SOCKS_V5, inlandIPSegments,ports);
+        }
+        executor.scheduleAtFixedRate(scheduler, getInitDelay(inlandSocks5Interval,
+                Integer.valueOf(env.getProperty("inland.socks5.scanner.start"))), inlandSocks5Interval, TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleAbroadHTTPTask(ScheduledExecutorService executor,long abroadHTTPInterval) {
+        TaskScheduler scheduler = new TaskScheduler("AbroadHTTPProxy", "国外HTTP代理",
+                ProtocolType.HTTP, abroadIPSegments,ports);
+        executor.scheduleAtFixedRate(scheduler, getInitDelay(abroadHTTPInterval,
+                Integer.valueOf(env.getProperty("abroad.http.scanner.start"))), abroadHTTPInterval, TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleAbroadSocks4Task(ScheduledExecutorService executor,long abroadSocks4Interval) {
+        TaskScheduler scheduler = new TaskScheduler("abroadSocks4Proxy", "国外socks4代理",
+                ProtocolType.SOCKS_V4, abroadIPSegments,ports);
+        executor.scheduleAtFixedRate(scheduler, getInitDelay(abroadSocks4Interval,
+                Integer.valueOf(env.getProperty("abroad.socks4.scanner.start"))), abroadSocks4Interval, TimeUnit.MILLISECONDS);
+    }
+
+    private void scheduleAbroadSocks5Task(ScheduledExecutorService executor,long abroadSocks5Interval) {
+        TaskScheduler scheduler = new TaskScheduler("abroadSocks5Proxy", "国外socks5代理",
+                ProtocolType.SOCKS_V5, abroadIPSegments,ports);
+        executor.scheduleAtFixedRate(scheduler, getInitDelay(abroadSocks5Interval,
+                Integer.valueOf(env.getProperty("abroad.socks5.scanner.start"))), abroadSocks5Interval, TimeUnit.MILLISECONDS);
+    }
+
+
 
 
     private static Map<Integer, String> readIPSegments(String ipSegFilePath) {

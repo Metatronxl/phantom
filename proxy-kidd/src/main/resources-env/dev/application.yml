@@ -33,6 +33,7 @@ spring:
       max-request-size: 300MB
       max-file-size: 1000MB
 
+#ip_segments  ip_list
 input_type: ip_list
 
 # Ports need to detect
