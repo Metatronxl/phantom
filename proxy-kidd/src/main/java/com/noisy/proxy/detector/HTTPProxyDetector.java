@@ -124,6 +124,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     public void detect(String ip, int port) {
         try {
             semaphore.acquire();
+            log.info("semaphore acquire:{}",semaphore.toString());
         } catch (InterruptedException e) {
             log.warn("An exception occurred when creating a detection task, ex: {}", e);
         }
@@ -154,6 +155,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
         }
 
         semaphore.release();
+        log.info("semaphore release:{}",semaphore.toString());
         ctx.channel().attr(AttributeKey.valueOf("finished")).set(true);
 
         long leftTasks = taskCounter.decrementAndGet();
