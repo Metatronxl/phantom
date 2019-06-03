@@ -8,7 +8,7 @@ JAR_NAME="proxy-kidd-1.0-SNAPSHOT.jar"
 function compile()
 {
 	echo "rebuild project"
-	mvn clean package -Pprod
+	mvn clean package -Pprod -Dmaven.test.skip=true
 }
 
 function hasCodeUpdate()

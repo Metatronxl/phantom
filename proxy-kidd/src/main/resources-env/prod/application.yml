@@ -34,7 +34,7 @@ spring:
       max-file-size: 1000MB
 
 #ip_segments  ip_list
-input_type: ip_list
+input_type: ip_segments
 
 # Ports need to detect
 data.address: /root/proxyScanner/ip_data/
