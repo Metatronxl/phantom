@@ -82,11 +82,12 @@ public class TaskScheduler implements Runnable {
         }
     }
 
-    private long createTaskFromIpSegs() {
+    private void createTaskFromIpSegs() {
         if (ipSegments == null || ipSegments.isEmpty()) {
-            return 0;
+            return ;
         }
-        countTotalTasks();
+        //TODO 计算量太大
+//        countTotalTasks();
 
         log.info("{}: creating tasks.", name);
         for (Integer port : ports) {
@@ -99,6 +100,7 @@ public class TaskScheduler implements Runnable {
                         String proxyIP = ipSegment.getNextStringIP();
                         if (!IPFilterUtils.getInstance().needFilter(proxyIP)) {
                             proxyDetector.detect(proxyIP, port);
+                            log.info("proxy detect start...proxyIP:{} ### port:{}",proxyIP,port);
                         }
                     } else {
                         iterator.remove();
@@ -107,10 +109,9 @@ public class TaskScheduler implements Runnable {
             }
         }
 
-        long totalIPNum = totalTasks / ports.size();
-        log.info("{} has finished to create the tasks, total IP number: {}", name, totalIPNum);
+//        long totalIPNum = totalTasks / ports.size();
+//        log.info("{} has finished to create the tasks, total IP number: {}", name, totalIPNum);
 
-        return totalTasks;
     }
 
     private long createTaskFromIpList() {

@@ -129,10 +129,10 @@ public class Socks4ProxyDetector extends AbstractProxyDetector {
 
             long leftTasks = taskCounter.get();
             long tmpTotalTasks = totalTasks.incrementAndGet();
-            if (((tmpTotalTasks == scheduler.getTotalTasks()) && (leftTasks % 100) == 0)
-                    || ((tmpTotalTasks % 1000000) == 0)) {
-                log.info("Created tasks: {}, Left tasks: {}", tmpTotalTasks, leftTasks);
-            }
+//            if (((tmpTotalTasks == scheduler.getTotalTasks()) && (leftTasks % 100) == 0)
+//                    || ((tmpTotalTasks % 1000000) == 0)) {
+//                log.info("Created tasks: {}, Left tasks: {}", tmpTotalTasks, leftTasks);
+//            }
         } catch (Exception e) {
             log.error("An exception occurred when connecting to host {}:{}, ex: {}", ip, port, e);
         }
