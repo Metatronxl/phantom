@@ -9,9 +9,6 @@ import com.noisy.proxy.entity.ProxyType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -64,20 +61,13 @@ public class Socks4ProxyDetector extends AbstractProxyDetector {
 
     public Socks4ProxyDetector(TaskScheduler scheduler) {
         this.scheduler = scheduler;
-        if (Epoll.isAvailable()) {
-            workerGroup = new EpollEventLoopGroup(nThreads);
-        } else {
-            workerGroup = new NioEventLoopGroup(nThreads);
-        }
+
+        workerGroup = new NioEventLoopGroup(nThreads);
+
 
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
-        if (Epoll.isAvailable()) {
-            bootstrap.channel(EpollSocketChannel.class);
-        } else {
-            bootstrap.channel(NioSocketChannel.class);
-        }
-
+        bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, false);

@@ -6,27 +6,19 @@ import com.noisy.proxy.dao.ProxyInfoDaoFilempl;
 import com.noisy.proxy.entity.ProtocolType;
 import com.noisy.proxy.entity.ProxyInfo;
 import com.noisy.proxy.entity.ProxyType;
-import com.noisy.proxy.util.IPLocationUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.AttributeKey;
-import org.apache.commons.io.FileUtils;
-import org.apache.tools.ant.taskdefs.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Resource;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.concurrent.Semaphore;
@@ -34,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Created by kevin on 5/24/16.
+ * Created by lei.x on 5/24/19.
  */
 public class HTTPProxyDetector extends AbstractProxyDetector {
     private static final Logger log = LoggerFactory.getLogger(HTTPProxyDetector.class);
@@ -43,7 +35,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     private final static int nThreads = THREAD_POOL_SIZE_CORES_MULTIPLE
             * Runtime.getRuntime().availableProcessors();
 
-    private final ProxyInfoDao proxyInfoDao =  new ProxyInfoDaoFilempl();
+    private final ProxyInfoDao proxyInfoDao = new ProxyInfoDaoFilempl();
 
     private EventLoopGroup workerGroup;
     private Calendar startTime = Calendar.getInstance();
@@ -65,12 +57,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
 
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
-        if (Epoll.isAvailable()) {
-            bootstrap.channel(EpollSocketChannel.class);
-        } else {
-            bootstrap.channel(NioSocketChannel.class);
-        }
-
+        bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.AUTO_CLOSE, true);
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
@@ -124,7 +111,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     public void detect(String ip, int port) {
         try {
             semaphore.acquire();
-            log.info("semaphore acquire:{}",semaphore.toString());
+            log.info("semaphore acquire:{}", semaphore.toString());
         } catch (InterruptedException e) {
             log.warn("An exception occurred when creating a detection task, ex: {}", e);
         }
@@ -155,7 +142,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
         }
 
         semaphore.release();
-        log.info("semaphore release:{}",semaphore.toString());
+        log.info("semaphore release:{}", semaphore.toString());
         ctx.channel().attr(AttributeKey.valueOf("finished")).set(true);
 
         long leftTasks = taskCounter.decrementAndGet();
@@ -209,13 +196,13 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
             // Send HTTP request
             URI uri = new URI(getProxyCheckerURL());
             int port = uri.getPort();
-            String host = uri.getHost() +":"+String.valueOf(port);
+            String host = uri.getHost() + ":" + String.valueOf(port);
 
             HttpRequest request = new DefaultHttpRequest(
                     HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
             request.headers().set(HttpHeaderNames.HOST, host);
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            request.headers().set(HttpHeaderNames.PROXY_CONNECTION,HttpHeaderValues.KEEP_ALIVE);
+            request.headers().set(HttpHeaderNames.PROXY_CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
 
             ctx.channel().writeAndFlush(request);

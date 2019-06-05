@@ -11,8 +11,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollChannelOption;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -37,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Created by kevin on 5/24/16.
+ * Created by lei.x on 5/24/19.
  */
 
 @Slf4j
@@ -64,20 +62,12 @@ public class Socks5ProxyDetector extends AbstractProxyDetector {
 
     public Socks5ProxyDetector(TaskScheduler scheduler) {
         this.scheduler = scheduler;
-        if (Epoll.isAvailable()) {
-            workerGroup = new EpollEventLoopGroup(nThreads);
-        } else {
-            workerGroup = new NioEventLoopGroup(nThreads);
-        }
+
+        workerGroup = new NioEventLoopGroup(nThreads);
 
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup);
-        if (Epoll.isAvailable()) {
-            bootstrap.channel(EpollSocketChannel.class);
-        } else {
-            bootstrap.channel(NioSocketChannel.class);
-        }
-
+        bootstrap.channel(NioSocketChannel.class);
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, false);

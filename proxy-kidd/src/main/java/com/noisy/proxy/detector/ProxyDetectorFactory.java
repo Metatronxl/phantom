@@ -4,7 +4,7 @@ import com.noisy.proxy.TaskScheduler;
 import com.noisy.proxy.entity.ProtocolType;
 
 /**
- * Created by kevin on 6/13/16.
+ * Created by lei.x on 5/24/19.
  */
 public class ProxyDetectorFactory {
     /**

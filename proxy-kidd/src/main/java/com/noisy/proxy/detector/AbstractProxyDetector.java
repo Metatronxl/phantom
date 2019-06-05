@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * Created by kevin on 5/24/16.
+ * Created by lei.x on 5/24/19.
  */
 
 public abstract class AbstractProxyDetector implements ProxyDetector {
