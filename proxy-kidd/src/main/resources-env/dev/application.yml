@@ -10,6 +10,7 @@ spring:
     username: root
     password: phantom
     filters: stat
+#    最大连接数
     maxActive: 20
     initialSize: 1
     maxWait: 60000

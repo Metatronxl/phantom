@@ -23,8 +23,8 @@ public abstract class AbstractProxyDetector implements ProxyDetector {
 
 
     private static final Logger log = LoggerFactory.getLogger(AbstractProxyDetector.class);
-    //TODO update
-    private String proxyCheckerURL = "http://www.scumall.com:20000/test/parse";
+    //TODO 代理检测URL配置优化
+    private String proxyCheckerURL = "http://152.136.138.106:20000/test/parse";
     private final int timeout = 10000;
     private String outputDir="output/";
 

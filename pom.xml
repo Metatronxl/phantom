@@ -6,7 +6,8 @@
 		<module>proxy-kidd</module>
 		<module>phantom-backend</module>
 		<module>proxy-grab</module>
-	</modules>
+    	<module>phantom-master</module>
+  </modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
