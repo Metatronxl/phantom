@@ -172,7 +172,7 @@ public class ProxyScanner {
 
 
 
-    private static Map<Integer, String> readIPSegments(String ipSegFilePath) {
+    public static Map<Integer, String> readIPSegments(String ipSegFilePath) {
         log.info("Loading IP segments from file: {}", ipSegFilePath);
         Map<Integer, String> ipSegments = new HashMap<>();
         File file = FileUtils.getFile(ipSegFilePath);

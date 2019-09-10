@@ -74,7 +74,6 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                 // 客户端接收到的是httpResponse响应，所以要使用HttpResponseDecoder进行解码
                 ch.pipeline().addLast(new HttpClientCodec());
                 ch.pipeline().addLast(new ReadTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
-
                 ch.pipeline().addLast(new HttpClientOutboundHandler());
                 ch.pipeline().addLast(new WriteTimeoutHandler(getTimeout(), TimeUnit.MILLISECONDS));
                 // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
@@ -172,7 +171,6 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
                 buf.release();
 
                 String proxyIP = (String) ctx.channel().attr(AttributeKey.valueOf("ip")).get();
-                System.out.println(responseText.trim());
                 ProxyType proxyType = checkProxyType(proxyIP, responseText.trim());
                 if (proxyType != null) {
                     ProxyInfo proxyInfo;

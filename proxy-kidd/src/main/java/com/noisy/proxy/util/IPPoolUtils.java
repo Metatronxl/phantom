@@ -1,5 +1,6 @@
 package com.noisy.proxy.util;
 
+import com.noisy.proxy.ProxyScanner;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,6 +274,32 @@ public class IPPoolUtils {
             x /= 2;
         }
         return result;
+    }
+
+
+    public static void main(String[] args) {
+
+        String filePath = "/Users/xulei2/data/ip_data/InlandIPSegments.txt";
+        Map<Integer,String> iPSegments = ProxyScanner.readIPSegments(filePath);
+        List<IPSegment> ipSegmentList = IPPoolUtils.getIPSegments(iPSegments.values());
+        int count = 0;
+        while (!ipSegmentList.isEmpty()){
+            Iterator<IPSegment> iterator = ipSegmentList.iterator();
+            while (iterator.hasNext()) {
+                IPSegment ipSegment = iterator.next();
+                if (ipSegment.hasNextIP()) {
+                    String proxyIP = ipSegment.getNextStringIP();
+                    if (!IPFilterUtils.getInstance().needFilter(proxyIP)) {
+                        log.info("proxy detect start...proxyIP:{} ### {}",proxyIP,count);
+                        count+=1;
+                    }
+                } else {
+                    iterator.remove();
+                }
+            }
+        }
+
+        log.info("total proxy count: {}",count);
     }
 }
 
