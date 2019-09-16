@@ -43,7 +43,7 @@ public class HTTPProxyDetector extends AbstractProxyDetector {
     private final AtomicLong totalTasks = new AtomicLong(0);
     private final AtomicLong proxyIPNum = new AtomicLong(0);
     // The TCP connection limits of the system, must small than 500000
-    private final int tcpConnLimits = 2000;
+    private final int tcpConnLimits = 32000;
     private final Semaphore semaphore = new Semaphore(tcpConnLimits);
     private final Semaphore canStartNextSchSem = new Semaphore(1);
     private Bootstrap bootstrap;
